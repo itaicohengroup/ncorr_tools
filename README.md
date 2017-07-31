@@ -3,7 +3,7 @@ by [Lena R. Bartell, Itai Cohen Group, Cornell Unviersity](#authors)
 
 This repository includes modifications to NCorr (Justin Blaber's MATLAB-based 2D DIC software) and associated tools for handling the resulting data. See each individual component for more detailed documentation. To use these tools, you should first acquire NCorr from the web: [http://www.ncorr.com/index.php](http://www.ncorr.com/index.php).
 
-##Components
+## Components
 
 * `ncorr_dispgrad`: A modified version of `ncorr.m` (to replace the original one of the files from ncorr v1.2.1)
 * `ncorr_plot`: A MATLAB function to create custom movies and plots of the results obtained from NCorr
