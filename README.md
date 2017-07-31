@@ -5,8 +5,8 @@ This repository includes modifications to NCorr (Justin Blaber's MATLAB-based 2D
 
 ## Components
 
-* `ncorr_dispgrad`: A modified version of `ncorr.m` (to replace the original one of the files from ncorr v1.2.1)
-* `ncorr_plot`: A MATLAB function to create custom movies and plots of the results obtained from NCorr
+* `ncorr_dispgrad`: A modified version of `ncorr.m` (to replace the original `ncorr.m` file from NCorr v1.2.1 software)
+* `ncorr_plot`: A MATLAB function to import NCorr results and create custom movies and plots of the results 
 
 ## More Information
 
