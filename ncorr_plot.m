@@ -19,6 +19,23 @@ function [mov, options, scalar_data] = ncorr_plot(varargin)
 %                   program will bring up a dialog box and ask the user to
 %                   find the file on the system.
 %
+%   'ScalarFun'     Function to compute scalar strain quantity from the XX,
+%                   XY, and YY components of the 2D strain tensor or,
+%                   alternatively, from the dudx, dudy, dvdx, dvdy
+%                   components of the deformation gradient field, or from
+%                   the u=dx, v=dy components of the displacement field
+%                   (strain vs deformation gradient vs displacement
+%                   determined based on the 'DataType'  input). If
+%                   'DataType' is 'strain', then this function should take
+%                   the strain components as three separate arguments in
+%                   the order: XX, XY, YY. If 'DataType' is 'gradu', then
+%                   this function should take the deformation gradient
+%                   fields as four separate arguments in the order: dudx,
+%                   dudy, dvdx, dvdy. These inputs are matrices so the
+%                   function should be appropriately vectorized (e.g.
+%                   xx.*yy for element-wise multiplication, instead of
+%                   xx*yy). The default function computes the first strain
+%                   invariant: @(xx,xy,yy) xx+yy 
 %   
 %   'DataType'      String, 'strain', 'gradu', or 'disp', specifying if the
 %                   ScalarFun input takes the 3 strain components, the 4
