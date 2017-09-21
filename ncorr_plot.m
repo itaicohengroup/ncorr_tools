@@ -1,6 +1,6 @@
-function [mov, options, scalar_data] = ncorr_plot(varargin)
+function [mov, options, scalar_data, fig] = ncorr_plot(varargin)
 % NCORR_PLOT Display scalar from saved ncorr data as a movie
-%   [mov, options, scalar] = NCORR_PLOT loads data saved from an ncorr
+%   [mov, options, scalar, fig] = NCORR_PLOT loads data saved from an ncorr
 %   analysis session and displays the first principal strain in the current
 %   configuration (i.e. the trace of the 2D Euler-Almansi strain tensor) on
 %   top of the corresponding image at each time point. The resulting
@@ -8,7 +8,8 @@ function [mov, options, scalar_data] = ncorr_plot(varargin)
 %   resulting in a 4D array or movie "mov", that can be displayed using
 %   "implay(mov)". The underlying principal strain data is stored in the 3D
 %   array 'scalar' (dimensions are Y, X, and time). The options used during
-%   analysis are saved in the structure 'options'. 
+%   analysis are saved in the structure 'options'. A handle to the leftover
+%   plotting figure is returned in 'fig'.
 %
 %   [mov, options, scalar] = NCORR_PLOT(Name,Value, ...) additionally
 %   specifies optional analysis parameters using Name/Value pairs. Optional
@@ -176,7 +177,6 @@ for ii = 1:nT
 end
 
 % finish up
-close(fig)
 mov = cat(4, mov{:});
 if savescalar
     scalar_data = cat(4, scalar_data{:});
