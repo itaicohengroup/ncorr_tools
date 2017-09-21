@@ -160,7 +160,7 @@ for ii = 1:nT
     end
     
     % get and plot new scalar data
-    [h_scalar.CData, h_scalar.AlphaData, ax.CLim, raw_scalar] = get_scalar(data_dic_save, options, tt);
+    [h_scalar.CData, h_scalar.AlphaData, ax.CLim, ~, raw_scalar] = get_scalar(data_dic_save, options, tt);
     if options.Rotate90
         h_scalar.CData = flip(permute(h_scalar.CData, [2 1 3]),1);
         h_scalar.AlphaData = flip(permute(h_scalar.AlphaData, [2 1 3]),1);
