@@ -119,7 +119,7 @@ im = get_image(reference_save, current_save, options, timepts(1));
 % setup figure, axes and colorbar
 fig = figure('color', 'w');
 fig.Colormap = scalar_map;
-ax = axes('parent', fig, 'fontname', 'Garamond');
+ax = axes('parent', fig);
 ax.NextPlot = 'add';
 ax.XLim = [0 size(im, 2)];
 ax.YLim = [0 size(im, 1)];
