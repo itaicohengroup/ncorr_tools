@@ -287,8 +287,7 @@ if options.RedMap % Use CornellRed-to-white color map instead of parula
     scalar_map = cat(1,linspace(175,255,bit_depth),linspace(27,255,bit_depth),...
         linspace(27,255,bit_depth))'/255; % cornell red: [175 27 27]
 end
-if options.InvertCMap  % Flip low/high on colormap
-    scalar_map = flip(scalar_map, 1);
+if options.InvertCMap  %
 end
 if options.SymCMap % Make the colormap symmetric
     m = scalar_map(1:2:end,:);
