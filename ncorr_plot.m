@@ -66,14 +66,9 @@ function [mov, options, scalar_data, fig] = ncorr_plot(varargin)
 %   'TimePoints'    1D array of time points to plot. Default is 1:nT where
 %                   nT is the total number of time points. 
 %
-%   'SymCMap'       Single boolean. Use a center-symmertric color map.
-%                   Default is false. 
-%
-%   'RedMap'        Single boolean. Use a red-to-white color map instead of
-%                   parula. Default is false.
-%
-%   'InvertCMap'    Single boolean. Flip colormap (low<->high). Default is
-%                   false.
+%   'ColorMap'      Nx3 color map array for displaying the scalar map. If
+%                   not provided, the default is parula(256). Color map
+%                   columns correspond to RGB values in the range [0 1].
 %
 %   'Rotate90'      Single boolean. Rotate axes 90 degrees. Default is
 %                   false.
@@ -118,11 +113,11 @@ end
 
 % load data for first time point
 im = get_image(reference_save, current_save, options, timepts(1));
-[scalar, alpha_mask, ~, scalar_map] = get_scalar(data_dic_save, options, timepts(1));
+[scalar, alpha_mask] = get_scalar(data_dic_save, options, timepts(1));
 
 % setup figure, axes and colorbar
 fig = figure('color', 'w');
-fig.Colormap = scalar_map;
+fig.Colormap = options.ColorMap;
 ax = axes('parent', fig);
 ax.NextPlot = 'add';
 ax.XLim = [0 size(im, 2)];
@@ -164,7 +159,7 @@ for ii = 1:nT
     end
     
     % get and plot new scalar data
-    [h_scalar.CData, h_scalar.AlphaData, ax.CLim, ~, raw_scalar] = get_scalar(data_dic_save, options, tt);
+    [h_scalar.CData, h_scalar.AlphaData, ax.CLim, raw_scalar] = get_scalar(data_dic_save, options, tt);
     if options.Rotate90
         h_scalar.CData = flip(permute(h_scalar.CData, [2 1 3]),1);
         h_scalar.AlphaData = flip(permute(h_scalar.AlphaData, [2 1 3]),1);
@@ -199,9 +194,7 @@ addParameter(p, 'Limits', [-Inf Inf], @(x)validateattributes(x, {'numeric'}, {'s
 addParameter(p, 'Alpha', 0.5, @(x)validateattributes(x, {'numeric'},{'numel',1,'>=',0,'<=',1})) % alpha of strain displayed on top of image
 addParameter(p, 'Resolution', 150, @(x)validateattributes(x,{'numeric'},{'integer'}) ) % resolution in DPI for printing figure to create movie
 addParameter(p, 'TimePoints', NaN, @(x)validateattributes(x,{'numeric'}, {'integer', 'vector'}) ); % array of time points to plot
-addParameter(p, 'SymCMap', false, @(x)validateattributes(x,{'logical'}, {'scalar'}) ); % colormap
-addParameter(p, 'InvertCMap', false, @(x)validateattributes(x,{'logical'}, {'scalar'}) ); % colormap
-addParameter(p, 'RedMap', false, @(x)validateattributes(x,{'logical'}, {'scalar'}) ); % colormap
+addParameter(p, 'ColorMap', parula(256), @(x)validateattributes(x,{'numeric'}, {'2d','ncols',3,'>=',0,'<=',1}) ); % colormap
 addParameter(p, 'Rotate90', false, @(x)validateattributes(x,{'logical'}, {'scalar'}) ); % colormap
 p.parse(inputs{:})
 
@@ -215,9 +208,7 @@ options.Limits = p.Results.Limits;
 options.Alpha = p.Results.Alpha;
 options.Resolution = p.Results.Resolution;
 options.TimePoints = p.Results.TimePoints;
-options.SymCMap = p.Results.SymCMap;
-options.InvertCMap = p.Results.InvertCMap;
-options.RedMap = p.Results.RedMap;
+options.ColorMap = p.Results.ColorMap;
 options.Rotate90 = p.Results.Rotate90;
 
 % if path to data file was not valid (or not specified), have the user find it
@@ -247,7 +238,7 @@ end
 im = gray2ind(im, 2^8);
 im = ind2rgb(im, gray(2^8));
 
-function [scalar, alpha_mask, limits, scalar_map, raw_scalar] = get_scalar(data_dic_save, options, tt)
+function [scalar, alpha_mask, limits, raw_scalar] = get_scalar(data_dic_save, options, tt)
 
 % get tensor components & calculate scalar quantity
 switch options.DataType
@@ -281,23 +272,10 @@ if ~any(isfinite(limits));
 end
 
 % create truecolor image of scalar output
-bit_depth = 2^8;
-scalar_map = parula(bit_depth);
-if options.RedMap % Use CornellRed-to-white color map instead of parula
-    scalar_map = cat(1,linspace(175,255,bit_depth),linspace(27,255,bit_depth),...
-        linspace(27,255,bit_depth))'/255; % cornell red: [175 27 27]
-end
-if options.InvertCMap  % Flip low/high on colormap
-    scalar_map = flip(scalar_map, 1);
-end
-if options.SymCMap % Make the colormap symmetric
-    m = scalar_map(1:2:end,:);
-    scalar_map = cat(1, flip(m, 1), m);
-end
-
+nColors = size(options.ColorMap,1);
 scalar = mat2gray(scalar, options.Limits);
-scalar = gray2ind(scalar, bit_depth);
-scalar = ind2rgb(scalar, scalar_map);
+scalar = gray2ind(scalar, nColors);
+scalar = ind2rgb(scalar, options.ColorMap);
 
 % get alpha mask
 mask = data_dic_save.strains(tt).(['roi_' options.View '_formatted']).mask;
